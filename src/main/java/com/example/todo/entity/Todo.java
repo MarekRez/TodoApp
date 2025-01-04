@@ -38,6 +38,16 @@ public class Todo {
     private Date lastUpdated;
 
     // Add getters and setters manually
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+    public int getId() {
+        return id;
+    }
+    public Date getDateCreated() {
+        return dateCreated;
+    }
     public String getName() {
         return name;
     }
