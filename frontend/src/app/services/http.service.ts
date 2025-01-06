@@ -30,8 +30,14 @@ export class HttpService {
   updateTodo(todo: Todo): Observable<Todo> {
     return this.http.put<Todo>(`${this.todoAPI}/${todo.id}`, todo);
   }
-}
 
+  patchTodoStatus(id: number, completedStatus: boolean): Observable<Todo> {
+    return this.http.patch<Todo>(`${this.todoAPI}/${id}`, {
+      completed: completedStatus
+    });
+  }
+
+}
   interface GetTodoResponse {
   _embedded: {
     todos: Todo[];

@@ -71,6 +71,12 @@ export class AppComponent implements OnInit {
       });
   }
 
+  patchTodoStatus(id: number, completedStatus: boolean) {
+    this.httpService.patchTodoStatus(id, completedStatus).subscribe((data) => {
+      this.getTodos();
+    });
+  }
+
   showToast(): void {
     // Example
     console.log('Toast Message:');
@@ -82,4 +88,5 @@ export class AppComponent implements OnInit {
     delete todo.lastUpdated;
     this.todoForm.setValue(todo);
   }
+
 }
