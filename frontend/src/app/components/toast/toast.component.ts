@@ -1,21 +1,35 @@
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-toast',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss'
 })
 export class ToastComponent {
 
-  @Input() message: string | null = null;
+  toast: Toast | null = null;
 
-  show(message: string) {
-    this.message = message;
-    setTimeout(() => this.hide(), 2000); // Auto-hide after 2 s
+  show(toast: Toast) {
+    console.log('Showing toast:', toast); // Debug
+    this.toast = toast;
+    setTimeout(() => this.hide(), 3000);
   }
 
   hide() {
-    this.message = null;
+    this.toast = null;
   }
+
+  getToastClass(): string {
+    const baseClass = 'text-bg-';
+    return baseClass + this.toast?.type;
+  }
+
+}
+
+export interface Toast {
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
 }

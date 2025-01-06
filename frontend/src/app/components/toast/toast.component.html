@@ -1,13 +1,14 @@
-@if (message) {
+@if (toast) {
   <div
-    class="toast align-items-center text-bg-primary border-0 position-fixed bottom-0 end-0 m-3"
+    class="toast position-fixed m-3"
+    [class]="getToastClass()"
     role="alert"
     aria-live="assertive"
     aria-atomic="true"
   >
     <div class="d-flex">
       <div class="toast-body">
-        {{ message }}
+        {{ toast!.message }}
       </div>
       <button
         type="button"

@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ToastComponent} from './components/toast/toast.component';
 import {HttpService} from "./services/http.service";
@@ -14,6 +14,7 @@ import {Todo} from "./models/todo";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  @ViewChild('toast') toastComponent!: ToastComponent;
 
   private formBuilder = inject(FormBuilder);
   private httpService = inject(HttpService);
@@ -54,6 +55,7 @@ export class AppComponent implements OnInit {
       };
       this.httpService.createTodo(todoRequest).subscribe((data) => {
         this.getTodos();
+        this.toastComponent.show({ message: 'Todo created successfully', type: 'success' });
       });
     }
   }
@@ -61,6 +63,7 @@ export class AppComponent implements OnInit {
   deleteTodo(id: number) {
     this.httpService.deleteTodo(id).subscribe((data) => {
       this.getTodos();
+      this.toastComponent.show({ message: 'Todo deleted successfully', type: 'success' });
     });
   }
 
@@ -75,11 +78,6 @@ export class AppComponent implements OnInit {
     this.httpService.patchTodoStatus(id, completedStatus).subscribe((data) => {
       this.getTodos();
     });
-  }
-
-  showToast(): void {
-    // Example
-    console.log('Toast Message:');
   }
 
   handleEdit(todo: Todo) {
