@@ -43,7 +43,7 @@
         <tr>
           <td>
             <button type="submit" class="btn btn-primary" [disabled]="todoForm.invalid">
-              Submit
+              {{ isEditMode ? 'Update' : 'Create' }}
             </button>
           </td>
         </tr>
@@ -69,7 +69,7 @@
       <td>{{ todo.name }}</td>
       <td>{{ todo.description }}</td>
       <td>
-        <button class="btn btn-outline-primary btn-sm" aria-label="Edit">
+        <button class="btn btn-outline-primary btn-sm" aria-label="Edit" (click)="handleEdit(todo)">
           <i class="bi bi-pencil"></i>
         </button>
         <button class="btn btn-outline-danger btn-sm" aria-label="Delete" (click)="deleteTodo(todo.id!)">

@@ -15,11 +15,11 @@ export class HttpService {
     return this.http.post<Todo>(this.todoAPI, todo);
   }
 
-  getTodo(): Observable<Todo[]> {
-    return this.http.get<GetTodoResponse>(this.todoAPI).pipe(
-      map((data) => {
+  getTodos(): Observable<Todo[]> {
+    return this.http.get<GetTodoResponse>(this.todoAPI)
+        .pipe(map((data) => {
         return data._embedded.todos;
-      })
+        })
     );
   }
 
@@ -27,6 +27,9 @@ export class HttpService {
     return this.http.delete<Todo>(`${this.todoAPI}/${id}`);
   }
 
+  updateTodo(todo: Todo): Observable<Todo> {
+    return this.http.put<Todo>(`${this.todoAPI}/${todo.id}`, todo);
+  }
 }
 
   interface GetTodoResponse {

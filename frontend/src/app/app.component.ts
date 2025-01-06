@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
 
   todoForm!: FormGroup;
   todos: Todo[] = [];
+  isEditMode: boolean = false;
 
   ngOnInit(): void {
      this.todoForm = this.formBuilder.group({
@@ -28,11 +29,11 @@ export class AppComponent implements OnInit {
        description: [''],
        completed: [false]
     });
-     this.getTodo();
+     this.getTodos();
   }
 
-  getTodo() {
-    this.httpService.getTodo().subscribe((data) => {
+  getTodos() {
+    this.httpService.getTodos().subscribe((data) => {
       this.todos = data;
     });
   }
@@ -41,23 +42,44 @@ export class AppComponent implements OnInit {
     if (this.todoForm.invalid) {
       return;
     }
-    const formValue: Todo = this.todoForm.value;
-    const todoRequest: Todo = {
-      name: formValue.name,
-      description: formValue.description,
-      completed: false,
-    };
-    this.httpService.createTodo(todoRequest).subscribe((data) => {});
+    if (this.isEditMode) {
+      this.updateTodo(this.todoForm.value);
+    }
+    else {
+      const formValue: Todo = this.todoForm.value;
+      const todoRequest: Todo = {
+        name: formValue.name,
+        description: formValue.description,
+        completed: false,
+      };
+      this.httpService.createTodo(todoRequest).subscribe((data) => {
+        this.getTodos();
+      });
+    }
   }
 
   deleteTodo(id: number) {
     this.httpService.deleteTodo(id).subscribe((data) => {
-      this.getTodo();
+      this.getTodos();
     });
+  }
+
+  updateTodo(todo: Todo) {
+      this.httpService.updateTodo(todo).subscribe((data) => {
+      this.getTodos();
+      this.todoForm.reset();
+      });
   }
 
   showToast(): void {
     // Example
     console.log('Toast Message:');
+  }
+
+  handleEdit(todo: Todo) {
+    this.isEditMode = true;
+    delete todo.dateCreated;
+    delete todo.lastUpdated;
+    this.todoForm.setValue(todo);
   }
 }
