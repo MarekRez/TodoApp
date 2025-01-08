@@ -22,6 +22,8 @@ export class AppComponent implements OnInit {
   todoForm!: FormGroup;
   todos: Todo[] = [];
   isEditMode: boolean = false;
+  page: number = 0;
+  size: number = 5;
 
   ngOnInit(): void {
      this.todoForm = this.formBuilder.group({
@@ -30,7 +32,7 @@ export class AppComponent implements OnInit {
        description: [''],
        completed: [false]
     });
-     this.getTodos();
+     this.getTodosWithPagination();
   }
 
   getTodos() {
@@ -85,6 +87,13 @@ export class AppComponent implements OnInit {
     delete todo.dateCreated;
     delete todo.lastUpdated;
     this.todoForm.setValue(todo);
+  }
+
+  getTodosWithPagination(page = 0) {
+    this.httpService.getTodosWithPagination(page, this.size).subscribe((data) => {
+      if (data)
+      this.todos = data._embedded.todos;
+    });
   }
 
 }

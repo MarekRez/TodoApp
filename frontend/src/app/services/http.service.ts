@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Todo} from '../models/todo';
 import {map, Observable} from 'rxjs';
+import {Page} from '../models/page';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,11 @@ export class HttpService {
     );
   }
 
+  getTodosWithPagination(pageNum: number, size: number): Observable<GetTodoResponse> {
+    const url = `${this.todoAPI}?page=${pageNum}&size=${size}`;
+    return this.http.get<GetTodoResponse>(url);
+  }
+
   deleteTodo(id: number): Observable<Todo> {
     return this.http.delete<Todo>(`${this.todoAPI}/${id}`);
   }
@@ -38,9 +44,10 @@ export class HttpService {
   }
 
 }
-  interface GetTodoResponse {
+
+interface GetTodoResponse {
   _embedded: {
     todos: Todo[];
   };
+  page: Page;
 }
-
