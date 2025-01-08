@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {ToastComponent} from './components/toast/toast.component';
 import {HttpService} from "./services/http.service";
 import {Todo} from "./models/todo";
+import {GeneratedPage} from "./models/page";
 
 @Component({
   selector: 'app-root',
@@ -22,8 +23,10 @@ export class AppComponent implements OnInit {
   todoForm!: FormGroup;
   todos: Todo[] = [];
   isEditMode: boolean = false;
-  page: number = 0;
+  pageNum: number = 0;
   size: number = 5;
+  generatedPages: GeneratedPage[] = [];
+  totalTasks: number = 0;
 
   ngOnInit(): void {
      this.todoForm = this.formBuilder.group({
@@ -56,29 +59,32 @@ export class AppComponent implements OnInit {
         completed: false,
       };
       this.httpService.createTodo(todoRequest).subscribe((data) => {
-        this.getTodos();
+        this.getTodosWithPagination(this.pageNum);
         this.toastComponent.show({ message: 'Todo created successfully', type: 'success' });
       });
     }
   }
 
   deleteTodo(id: number) {
-    this.httpService.deleteTodo(id).subscribe((data) => {
-      this.getTodos();
-      this.toastComponent.show({ message: 'Todo deleted successfully', type: 'success' });
-    });
+    if(confirm('Are you sure you want to delete this todo?')) {
+      this.httpService.deleteTodo(id).subscribe((data) => {
+        this.getTodosWithPagination(this.pageNum);
+        this.toastComponent.show({ message: 'Todo deleted successfully', type: 'success' });
+      });
+      }
   }
 
   updateTodo(todo: Todo) {
       this.httpService.updateTodo(todo).subscribe((data) => {
-      this.getTodos();
+        this.getTodosWithPagination(this.pageNum);
       this.todoForm.reset();
+        this.isEditMode = false;
       });
   }
 
   patchTodoStatus(id: number, completedStatus: boolean) {
     this.httpService.patchTodoStatus(id, completedStatus).subscribe((data) => {
-      this.getTodos();
+      this.getTodosWithPagination(this.pageNum);
     });
   }
 
@@ -93,7 +99,21 @@ export class AppComponent implements OnInit {
     this.httpService.getTodosWithPagination(page, this.size).subscribe((data) => {
       if (data)
       this.todos = data._embedded.todos;
+        this.generateAllPages(data.page.totalPages);
+        this.totalTasks = data.page.totalElements;
+        this.pageNum = data.page.number;
     });
   }
 
+  generateAllPages(totalPages: number) {
+    this.generatedPages = [];
+    for (let i = 0; i < totalPages; i++) {
+      this.generatedPages.push({
+        displayValue: i + 1,
+        value: i,
+      });
+    }
+  }
+
+  protected readonly Math = Math;
 }

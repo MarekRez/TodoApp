@@ -118,17 +118,27 @@
 
         <div class="card-footer bg-white">
             <nav aria-label="Page navigation" class="d-flex justify-content-between align-items-center">
-                <span class="text-muted small">Showing 1-10 of 20 tasks</span>
-                <ul class="pagination pagination-sm mb-0">
+                <span class="text-muted small">
+                    Showing {{ pageNum * size + 1 }} - {{ Math.min((pageNum + 1) * size, totalTasks) }} of {{ totalTasks }} tasks.
+                </span>
+                <ul class="pagination pagination-sm mb-0 mx-auto">
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
+                        <a class="page-link" (click)="getTodosWithPagination(pageNum-1)" [class.disabled]="pageNum === 0" aria-label="Previous">
                             <i class="bi bi-chevron-left"></i>
                         </a>
                     </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+
+                    @for (tempPage of generatedPages; track $index) {
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                        <a class="page-link"
+                           [class.active]="pageNum === tempPage.value"
+                           (click)="getTodosWithPagination(tempPage.value)">{{ tempPage.displayValue }}
+                        </a>
+                    </li>
+                    }
+
+                    <li class="page-item">
+                        <a class="page-link" (click)="getTodosWithPagination(pageNum+1)" [class.disabled]="pageNum === generatedPages.length - 1" aria-label="Next">
                             <i class="bi bi-chevron-right"></i>
                         </a>
                     </li>

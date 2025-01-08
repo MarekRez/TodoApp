@@ -4,3 +4,8 @@ export interface Page {
   totalPages: number;
   number: number;
 }
+
+export interface GeneratedPage {
+  displayValue: number;
+  value: number;
+}
